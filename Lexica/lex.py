@@ -28,6 +28,8 @@ tokens = (
     'FECHA_PARENTESE',
     'ABRE_COLCHETE',
     'FECHA_COLCHETE',
+    'ABRE_CHAVE',
+    'FECHA_CHAVE',
     'SE', 
     'ENTAO', 
     'SENAO', 
@@ -68,6 +70,8 @@ t_ABRE_PARENTESE    = r'\('
 t_FECHA_PARENTESE   = r'\)'
 t_ABRE_COLCHETE     = r'\['
 t_FECHA_COLCHETE    = r'\]'
+t_ABRE_CHAVE        = r'\{'
+t_FECHA_CHAVE       = r'\}'
 t_SE                = r'se'
 t_ENTAO             = r'entao'
 t_SENAO             = r'senao'
@@ -100,7 +104,7 @@ def t_ID(t):
     t.type = reservadas.get(t.value, 'ID')
     return t
 
-def t_NUM_FLUTUANTE(t):
+def t_NUM_PONTO_FLUTUANTE(t):
     r'\d+\.\d*'
     t.value = float(t.value)
     return t
@@ -115,26 +119,26 @@ def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-# A string containing ignored characters (spaces and tabs)
+# Ignorando espaços em brancos, podendo ser espaços ou tabulações
 t_ignore  = ' \t'
 
-# Error handling rule
+# Lidando com erros
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    print("Caractere nao aceito '%s'" % t.value[0])
     t.lexer.skip(1)
 
 ##ROTINA AUXILIAR
-# Build the lexer
+# Contruindo o lexer
 lexer = lex.lex()
-# Test it out
-data = ''' inteiro aba = 0
-'''
-# Give the lexer some input
-lexer.input(data)
+# Realizando a leitura do arquivo
+data = open("./lexica-testes/somavet.tpp", 'r')
+# Entrando com arquivo no lexer
+lexer.input(data.read())
+
  
 # Tokenize
 while True:
     tok = lexer.token()
     if not tok: 
-        break      # No more input
+        break      # Quando não tiver mais token para realizar a analise
     print(tok.type, tok.value, tok.lineno, tok.lexpos)   
