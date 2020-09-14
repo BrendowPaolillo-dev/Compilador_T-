@@ -5,6 +5,7 @@
 # Brendow Paolillo Castro Isidoro
 # ------------------------------------------------------------
 import ply.lex as lex
+import os
 
 ##Definicoes
 
@@ -99,22 +100,27 @@ reservadas = {
 }
 
 ##REGRAS COM ACAO
+
+#Define um ID como uma sequencia de qualquer caractere alfabético, 
+#seguido de qualquer quantidade sequências de caracteres
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reservadas.get(t.value, 'ID')
     return t
 
+#Define um valor de ponto flutuante
 def t_NUM_PONTO_FLUTUANTE(t):
     r'\d+\.\d*'
     t.value = float(t.value)
     return t
 
-
+#Define um valor inteiro
 def t_NUM_INTEIRO(t):
     r'\d+'
     t.value = int(t.value)
     return t
 
+#Descreve uma nova linha
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
@@ -127,18 +133,41 @@ def t_error(t):
     print("Caractere nao aceito '%s'" % t.value[0])
     t.lexer.skip(1)
 
+def verify_input():
+    while True:
+        response = (str(input()))
+        print ((response))
+        if response == "":
+            break
+
+def show_all_tokens():
+    print("Imprimindo a lista de tokens:\n")
+    for x in tokens:
+        print(str(x))
+    print("\nAperte enter para continuar com os testes...")
+    verify_input()
+
 ##ROTINA AUXILIAR
 # Contruindo o lexer
 lexer = lex.lex()
-# Realizando a leitura do arquivo
-data = open("./lexica-testes/somavet.tpp", 'r')
+
+show_all_tokens()
+
+# Realizando a leitura do arquivo`
+for data_name in sorted(os.listdir("./Lexica/lexica-testes/")):
+    print ("Realizando o teste do arquivo: " + str(data_name) + '\n')
+    data = open("./Lexica/lexica-testes/" + str(data_name), 'r')
+
 # Entrando com arquivo no lexer
-lexer.input(data.read())
+    lexer.input(data.read())
 
  
-# Tokenize
-while True:
-    tok = lexer.token()
-    if not tok: 
-        break      # Quando não tiver mais token para realizar a analise
-    print(tok.type, tok.value, tok.lineno, tok.lexpos)   
+    # Tokenize
+    while True:
+        tok = lexer.token()
+        if not tok: 
+            break      # Quando não tiver mais token para realizar a analise
+        print(tok.type, tok.value, tok.lineno, tok.lexpos)
+        
+    print("\nAperte enter para realizar o próximo teste...")
+    verify_input()
