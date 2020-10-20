@@ -7,6 +7,7 @@
 import ply.lex as lex
 import os
 import logging
+import sys
 
 ##Definicoes
 
@@ -53,14 +54,14 @@ tokens = (
 
 ##REGRAS SIMPLES
 t_MAIS              = r'\+'
-t_MENOS             = r'-'
+t_MENOS             = r'\-'
 t_MULTIPLICACAO     = r'\*'
 t_DIVISAO           = r'\/'
 t_DOIS_PONTOS       = r':'
 t_VIRGULA           = r','
 t_MENOR             = r'<'
 t_MAIOR             = r'>'
-t_ATRIBUICAO        = r'='
+t_ATRIBUICAO        = r':='
 t_MENOR_IGUAL       = r'<='
 t_MAIOR_IGUAL       = r'>='
 t_IGUAL             = r'=='
@@ -88,11 +89,11 @@ t_FUNCAO            = r'funcao'
 #PALAVRAS RESERVADAS
 reservadas = {
     'se'        : 'SE',
-    'entao'     : 'ENTAO',
-    'senao'     : 'SENAO',
+    u'então'     : 'ENTAO',
+    u'senão'     : 'SENAO',
     'fim'       : 'FIM',
     'repita'    : 'REPITA',
-    'ate'       : 'ATE',
+    u'até'       : 'ATE',
     'leia'      : 'LEIA',
     'escreva'   : 'ESCREVA',
     'retorna'   : 'RETORNA',
@@ -114,7 +115,7 @@ log = logging.getLogger()
 #Define um ID como uma sequencia de qualquer caractere alfabético, 
 #seguido de qualquer quantidade sequências de caracteres
 def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    r'[a-zA-Z][a-zA-Z_0-9à-ú]*'
     t.type = reservadas.get(t.value, 'ID')
     return t
 
@@ -159,17 +160,17 @@ def show_all_tokens():
 
 ##ROTINA AUXILIAR
 # Contruindo o lexer
+lexer = lex.lex(debug = True, debuglog = log, errorlog=log)
+
 def main():
-    
-    lexer = lex.lex(debug = True, debuglog = log, errorlog=log)
 
     show_all_tokens()
 
     # Realizando a leitura do arquivo`
-    aux = argv[1].split('.')
+    aux = sys.argv[1].split('.')
     if aux[-1] != 'tpp':
       raise IOError("Not a .tpp file!")
-    data = open(argv[1])
+    data = open(sys.argv[1])
 
     source_file = data.read()
 
