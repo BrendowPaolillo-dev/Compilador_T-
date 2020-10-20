@@ -12,7 +12,7 @@ inteiro fatorial(inteiro: n)
         repita
             fat := fat * n
             n := n - 1
-        até n = 0
+        até n == 0
         retorna(fat) {retorna o valor do fatorial de n}
     senão
         retorna(0)

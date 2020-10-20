@@ -81,9 +81,7 @@ def p_declaracao_variaveis(p):
     dp = MyNode("DOIS_PONTOS", children=[MyNode(p[2])])
     p[0] = MyNode('declaracao_variaveis', children=[p[1], dp, p[3]])
 
-    
 
- 
 
 def p_inicializacao_variaveis(p):
     "inicializacao_variaveis : atribuicao"
@@ -248,7 +246,7 @@ def p_acao(p):
         | escreva
         | retorna
     """
-    p[0] = MyNode("acao", children= [MyNode(p[1])])
+    p[0] = MyNode("acao", children = [p[1]])
 
 def p_se_error(p):
     """se : error expressao ENTAO corpo FIM
@@ -396,14 +394,32 @@ def p_operador_relacional(p):
                             | MENOR_IGUAL
                             | MAIOR_IGUAL
     """
-    p[0] = MyNode('operador_relacional', children=[MyNode(p[1].upper(), children = [MyNode(p[1])])])
+    if (p[1] == "=="):
+        p[0] = MyNode('operador_relacional', children=[MyNode("IGUAL", children = [MyNode(p[1])])])
+    
+    elif (p[1] == "<"):
+        p[0] = MyNode('operador_relacional',children=[MyNode("MENOR", children = [MyNode(p[1])])])
+        
+    elif (p[1] == ">"):
+        p[0] = MyNode('operador_relacional', children=[MyNode("MAIOR", children = [MyNode(p[1])])])
+    
+    elif (p[1] == "!="):
+        p[0] = MyNode('operador_relacional', children=[MyNode("DIFERENTE", children = [MyNode(p[1])])])
+    
+    elif (p[1] == "<="):
+        p[0] = MyNode('operador_relacional', children=[MyNode("MENOR_IGUAL", children = [MyNode(p[1])])])
+    
+    elif (p[1] == ">="):
+        p[0] = MyNode('operador_relacional', children=[MyNode("MAIOR_IGUAL", children = [MyNode(p[1])])])
 
 def p_operador_soma(p):
     """operador_soma : MAIS
                     | MENOS
     """
-    p[0] = MyNode('operador_soma', children=[MyNode(p[1].upper(), children = [MyNode(p[1])])])
-
+    if (p[1] == "+"):
+        p[0] = MyNode('operador_soma', children=[MyNode("MAIS", children = [MyNode(p[1])])])
+    else:
+        p[0] = MyNode('operador_soma', children=[MyNode("MENOS", children = [MyNode(p[1])])])
 
 def p_operador_logico(p):
     """operador_logico : E_LOGICO
