@@ -9,22 +9,9 @@ import os
 import logging
 import sys
 
-reservadas = {
-    'se'        : 'SE',
-    u'então'     : 'ENTAO',
-    u'senão'     : 'SENAO',
-    'fim'       : 'FIM',
-    'repita'    : 'REPITA',
-    u'até'       : 'ATE',
-    'leia'      : 'LEIA',
-    'escreva'   : 'ESCREVA',
-    'retorna'   : 'RETORNA',
-    'inteiro'   : 'INTEIRO',
-    'flutuante' : 'FLUTUANTE',
-}
-
 ##Definicoes
-tokens = [
+
+tokens = (
     'MAIS',
     'MENOS',
     'MULTIPLICACAO',
@@ -63,8 +50,7 @@ tokens = [
     'NUM_NOTACAO_CIENTIFICA', 
     'ID',
     'FUNCAO',
-    'COMENTARIO',
-] + list(reservadas.values())
+)
 
 ##REGRAS SIMPLES
 t_MAIS              = r'\+'
@@ -79,7 +65,7 @@ t_ATRIBUICAO        = r':='
 t_MENOR_IGUAL       = r'<='
 t_MAIOR_IGUAL       = r'>='
 t_IGUAL             = r'=='
-t_DIFERENTE         = r'<>'
+t_DIFERENTE         = r'!='
 t_E_LOGICO          = r'&&'
 t_OU_LOGICO         = r'\|\|'
 t_NEGACAO           = r'\!'
@@ -96,9 +82,22 @@ t_ATE               = r'ate'
 t_LEIA              = r'leia'
 t_ESCREVA           = r'escreva'
 t_RETORNA           = r'retorna'
-t_FUNCAO            = r'funcao' 
+t_FUNCAO            = r'funcao'
 
 #PALAVRAS RESERVADAS
+reservadas = {
+    'se'        : 'SE',
+    u'então'     : 'ENTAO',
+    u'senão'     : 'SENAO',
+    'fim'       : 'FIM',
+    'repita'    : 'REPITA',
+    u'até'       : 'ATE',
+    'leia'      : 'LEIA',
+    'escreva'   : 'ESCREVA',
+    'retorna'   : 'RETORNA',
+    'inteiro'   : 'INTEIRO',
+    'flutuante' : 'FLUTUANTE',
+}
 
 #gerando um arquivo de log
 logging.basicConfig(
@@ -114,11 +113,11 @@ log = logging.getLogger()
 #Define um ID como uma sequencia de qualquer caractere alfabético, 
 #seguido de qualquer quantidade sequências de caracteres
 def t_ID(t):
-    r"[a-zA-ZÀ-ÿ_][a-zÀ-ÿ_0-9]*"
+    r'[a-zA-Z][a-zA-Z_0-9à-ú]*'
     t.type = reservadas.get(t.value, 'ID')
     return t
 
-# #Define um valor de ponto flutuante
+#Define um valor de ponto flutuante
 def t_NUM_PONTO_FLUTUANTE(t):
     r'\d+\.\d*'
     t.value = float(t.value)
@@ -130,26 +129,17 @@ def t_NUM_INTEIRO(t):
     t.value = int(t.value)
     return t
 
-# def t_NUM_NOTACAO_CIENTIFICA(t):
-#     r'/-?(?:0|[1-9]\d*)(?:\.\d*)?(?:[eE][+\-]?\d+)?/'
-#     t.value = "{:.2e}".format(t.value)
-#     return t
-def t_COMENTARIO(t):
-    r'\{[^}]*[^{]*\}.*'
-    for x in range(0, len(t.value)):
-        if t.value[x] == '\n':
-            t.lexer.lineno += 1
-
-    pass
-
 #Descreve uma nova linha
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
+# r'\{((.|\n)*?)\}'
+def t_COMMENT(t):    
+    r'\{[^\{]*\}'
+    t.lexer.lineno += len(t.value.split('\n')) - 1
 
 # Ignorando espaços em brancos, podendo ser espaços ou tabulações
 t_ignore  = ' \t'
-
 
 # Lidando com erros
 def t_error(t):

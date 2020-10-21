@@ -63,7 +63,7 @@ def p_lista_declaracoes(p):
 def p_declaracao(p):
     """declaracao : declaracao_variaveis
                 | inicializacao_variaveis
-                | funcao
+                | declaracao_funcao
     """
     p[0] = MyNode('declaracao', children = [p[1]])
     
@@ -160,19 +160,15 @@ def p_tipo(p):
         p[0] = MyNode("tipo", children=[tipo])
 
 
-def p_funcao(p):
-    """funcao : tipo cabecalho 
+def p_declaracao_funcao(p):
+    """declaracao_funcao : tipo cabecalho 
                         | cabecalho 
     """
     if len(p) == 3:
-        p[0] = MyNode ('funcao', children = [p[1], p[2]])
+        p[0] = MyNode ('declaracao_funcao', children = [p[1], p[2]])
     else:
-        p[0] = MyNode('funcao', children = [p[1]]) 
+        p[0] = MyNode('declaracao_funcao', children = [p[1]]) 
     
-def p_cabecalho(p):
-    """cabecalho : ID ABRE_PARENTESE lista_parametros FECHA_PARENTESE corpo FIM
-                |"""
-    p[0] = MyNode('cabecalho', children = [MyNode("ID", children = [MyNode(p[1])]), MyNode("ABRE_PARENTESE", children = [MyNode(p[2])]), p[3], MyNode("FECHA_PARENTESE", children = [MyNode(p[4])]), p[5], MyNode("FIM", children = [MyNode(p[6])])])
 
 def p_cabecalho_error(p):
     """cabecalho : ID error lista_parametros FECHA_PARENTESE corpo FIM
@@ -188,7 +184,10 @@ def p_cabecalho_error(p):
         elif str(p[6]) == "corpo":
             p[0] = MyNode('cabecalho_error', children = [MyNode("ID", children = [MyNode(p[1])]), MyNode("ABRE_PARENTESE", children = [MyNode(p[2])]), p[3], MyNode("FECHA_PARENTESE", children = [MyNode(p[4])]), p[5], p[6]]) 
 
-
+def p_cabecalho(p):
+    """cabecalho : ID ABRE_PARENTESE lista_parametros FECHA_PARENTESE corpo FIM
+                |"""
+    p[0] = MyNode('cabecalho', children = [MyNode("ID", children = [MyNode(p[1])]), MyNode("ABRE_PARENTESE", children = [MyNode(p[2])]), p[3], MyNode("FECHA_PARENTESE", children = [MyNode(p[4])]), p[5], MyNode("FIM", children = [MyNode(p[6])])])
 
 def p_lista_parametros(p):
     """lista_parametros : lista_parametros VIRGULA parametro
@@ -208,7 +207,6 @@ def p_parametro(p):
         p[0] = MyNode("parametro", children = [p[1], MyNode("DOIS_PONTOS", children = [MyNode(p[2])]), MyNode("ID", children = [MyNode(p[3])])])
     else:
         p[0] = MyNode("parametro", children = [p[1], MyNode("ABRE_COLCHETE", children = [MyNode(p[2])]), MyNode("FECHA_COLCHETE", children = [MyNode(p[3])])])
-
 
 def p_parametro_error(p):
     """parametro : tipo error ID
@@ -246,6 +244,8 @@ def p_acao(p):
         | escreva
         | retorna
     """
+    print([p[0], p[1]])
+    teste = MyNode(p[1], children=[MyNode(p[1])])
     p[0] = MyNode("acao", children = [p[1]])
 
 def p_se_error(p):
@@ -258,20 +258,20 @@ def p_se_error(p):
     """
     if len(p) == 6:
         if str(p[1]) == "error":
-            p[0] = MyNode("se_error", children = [p[1], p[2], MyNode((p[3])), p[4], MyNode((p[5]))])
+            p[0] = MyNode("se_error", children = [p[1], p[2], MyNode("ENTAO", children=[MyNode(p[3])]), p[4], MyNode("FIM", children = [MyNode(p[5])])])
         elif str(p[3]) == "error":             
-            p[0] = MyNode("se_error", children = [MyNode((p[1])), p[2], p[3], p[4], MyNode((p[5]))])
+            p[0] = MyNode("se_error", children = [MyNode("SE", children = [MyNode(p[1])]), p[2], p[3], p[4], MyNode("FIM", children = [MyNode(p[5])])])
             
     elif len(p) == 7:
-        p[0] = MyNode("se_error", children = [MyNode((p[1])), p[2], MyNode((p[3])), p[4], MyNode((p[5])), p[6]])
+        p[0] = MyNode("se_error", children = [MyNode("SE", children = [MyNode(p[1])]), p[2], MyNode("ENTAO", children=[MyNode(p[3])]), p[4], MyNode("SENAO", children = [MyNode(p[5])]), p[6]])
     
     elif len(p) == 8:
         if str(p[1]) == 'error':
-            p[0] = MyNode("se_error", children = [p[1], p[2], MyNode((p[3])), p[4], MyNode((p[5])), p[6], MyNode((p[7]))])
+            p[0] = MyNode("se_error", children = [p[1], p[2], MyNode("ENTAO", children=[MyNode(p[3])]), p[4], MyNode("SENAO", children = [MyNode(p[5])]), p[6],  MyNode("FIM", children = [MyNode(p[7])])])
         elif str(p[3]) == "error":
-            p[0] = MyNode("se_error", children = [MyNode((p[1])), p[2], MyNode((p[3])), p[4], p[5], p[6], MyNode((p[7]))])
+            p[0] = MyNode("se_error", children = [MyNode("SE", children = [MyNode(p[1])]), p[2], MyNode((p[3])), p[4], p[5], p[6],  MyNode("FIM", children = [MyNode(p[7])])])
         elif str(p[5]) == "error":             
-            p[0] = MyNode("se_error", children = [MyNode((p[1])), p[2], p[3], p[4], MyNode((p[5])), p[6], MyNode((p[7]))])
+            p[0] = MyNode("se_error", children = [MyNode("SE", children = [MyNode(p[1])]), p[2], p[3], p[4], MyNode((p[5])), p[6],  MyNode("FIM", children = [MyNode(p[7])])])
         
     
 # Sub-árvore:
@@ -283,9 +283,9 @@ def p_se(p):
     """se : SE expressao ENTAO corpo FIM
         | SE expressao ENTAO corpo SENAO corpo FIM
     """
-    if str(p[5]) == 'FIM':
+    if str(p[5]) == 'fim':
         p[0] = MyNode('se', children=[MyNode("SE", children = [MyNode(p[1])]), p[2], MyNode("ENTAO", children = [MyNode(p[3])]), p[4], MyNode("FIM", children = [MyNode(p[5])])])
-    elif str(p[5]) == 'SENAO':
+    elif str(p[7]) == 'fim':
         p[0] = MyNode('se', children=[MyNode("SE", children = [MyNode(p[1])]), p[2],  MyNode("ENTAO", children = [MyNode(p[3])]), p[4], MyNode("SENAO", children = [MyNode(p[5])]), p[6],  MyNode("FIM", children = [MyNode(p[7])])])
              
 def p_repita(p):
