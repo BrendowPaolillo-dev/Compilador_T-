@@ -10,9 +10,9 @@ inteiro fatorial(inteiro: n)
 			repita
 				repita
 					fat := fat * n
-				até n == 0
+				até n = 0
 				fat := fat * n
-			até n == 0
+			até n = 0
 		senão
 			fat := 5
 		fim
@@ -29,3 +29,5 @@ inteiro principal()
 	leia(n)
 	escreva(fatorial(fatorial(1)))
 fim
+
+1+2

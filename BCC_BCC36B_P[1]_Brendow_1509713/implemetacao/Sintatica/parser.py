@@ -244,8 +244,6 @@ def p_acao(p):
         | escreva
         | retorna
     """
-    print([p[0], p[1]])
-    teste = MyNode(p[1], children=[MyNode(p[1])])
     p[0] = MyNode("acao", children = [p[1]])
 
 def p_se_error(p):
@@ -516,8 +514,8 @@ def main():
     if root and root.children != ():
         print('\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * \n')
         print("Generating AST, please waiexport_ASTt...")
-        UniqueDotExporter(root).to_picture("unique.tree.png")
-        UniqueDotExporter(root).to_dotfile("unique.tree.dot")
+        UniqueDotExporter(root).to_picture("tree.png")
+        UniqueDotExporter(root).to_dotfile("tree.dot")
         print("AST was successfully generated.\nOutput file: 'tree.png'")
     else:
         log .error("Unable to generate AST -- Syntax nodes not found")

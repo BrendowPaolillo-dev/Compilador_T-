@@ -13,7 +13,7 @@ inteiro somavet(inteiro: vet[], inteiro: tam)
 	repita
 		result := result + vet[i]
 		i := i + 1
-	até i == tam - 1
+	até i = tam - 1
 
 	retorna(result)	
 fim
