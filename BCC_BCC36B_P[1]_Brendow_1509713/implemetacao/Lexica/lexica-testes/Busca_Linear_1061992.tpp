@@ -14,7 +14,7 @@ inteiro busca(inteiro: n)
 			retorno := 1
 		fim		
 		i := i + 1
-	ate i = 20
+	até i = 20
 
 	retorna(retorno)
 fim
@@ -28,7 +28,7 @@ inteiro principal()
 	repita 
 		A[i] := i
 		i := i + 1
-	ate i = 20
+	até i = 20
 
 	leia(n)
 	escreva(busca(n))
